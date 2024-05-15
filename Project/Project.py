@@ -12,7 +12,7 @@ rooms = {
     'Dungeon': {'South': 'Torture Hall'},
     'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo'},
     'Limbo': {'North': 'Gluttony', 'East': 'Torture Hall', 'South': 'Lust', 'West': 'Exit'},
-    'Lust': {'North': 'Limbo', 'Item': 'Whip of Pain'},
+    'Lust': {'North': 'Limbo'},
     'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room'}, #Chest piece is basically armor. Increases max health
     'Hidden Room': {'East': 'Gluttony'}, #upgrade item
     'Greed': {'North': 'Torture Hall', 'South': 'Anger'},
