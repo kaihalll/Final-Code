@@ -2,14 +2,21 @@ import os
 
 # Define room configurations
 rooms = {
-    'Entrance to the Crypt': {'North': 'Research Room'},
-    'Research Room': {'North': 'Chamber of Shadows', 'East': 'Bed Chambers', 'West': 'Treasury', 'South':'Entrance to the Crypt', 'Item': 'Tome of Dark Incantations'},
-    'Treasury': {'East': 'Research Room', 'Item': 'Amulet of Undead Warding'},
-    'Bed Chambers': {'West': 'Research Room', 'Item': 'Phylactery Orb'},
-    'Chamber of Shadows': {'East': 'Armory', 'North': 'Throne Room', 'South': 'Research Room', 'Item': 'Orb of Shadow Veil'},
-    'Armory': {'West': 'Chamber of Shadows', 'Item': 'Soul Reaper Scythe'},
-    'Throne Room': {'South': 'Chamber of Shadows', 'West': 'Ritual Sanctum', 'Item': 'Cursed Crown of Dominion'},
-    'Ritual Sanctum': {'East': 'Throne Room'}
+    'Dungeon': {'South': 'Torture Hall'},
+    'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo', 'Item': 'Keys to Limbo'},
+    'Limbo': {'North': 'Gluttony', 'East': 'Torture Hall', 'South': 'Lust', 'West': 'Exit', 'Item': ''},
+    'Lust': {'North': 'Limbo', 'Item': 'Whip of Pain', 'Key Item': 'Key to Gluttony'},
+    'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room', 'Item': "Glutton's Chest Piece"}, #Chest piece is basically armor. Increases max health
+    'Hidden Room': {'East': 'Gluttony', 'Item': 'Blood Gem'}, #upgrade item
+    'Greed': {'North': 'Torture', 'South': 'Anger', 'Item': 'Cursed Coin', 'Key Item': 'Key to Anger'},
+    'Anger': {'North': 'Greed', 'East': 'Violence', 'West': 'Heresy', 'Item': 'Key to Heresy and Violence'},
+    'Heresy': {'East': 'Anger'},
+    'Violence': {'West': 'Anger', 'Item': "Murderer's Bloody Blade", 'Key Item': 'Key to Dining Hall'}, #The blade is a weapon. Though if we don't want to do weapons then we can just get rid of it
+    'Dining Hall': {'North': 'Treachery', 'East': 'Throne Room', 'South': 'Fraud', 'East': 'Torture Hall', 'Item': 'Key to Fraud'},
+    'Fraud': {'North': 'Dining Hall'},
+    'Treachery': {'South': 'Dining Hall', 'Key Item': "Backstabber's Knife"},
+    'Throne Room': {'West': 'Dining Hall'},
+    'Exit': {'South': 'Limbo'} #exit, end of the game
 }
 
 # Define enemy configurations
