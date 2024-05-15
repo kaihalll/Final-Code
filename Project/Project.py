@@ -1,32 +1,38 @@
+# To-Do list
+# 1. Training room
+# 2. Equipping different weapons from inventory
+# 3. Printing out items in inventory and direction arrays instead of whole array
+# 4. Creating enemies for each room (besides starting room)
+
+
 import os
 
 # Define room configurations
 rooms = {
     'Dungeon': {'South': 'Torture Hall'},
-    'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo', 'Item': 'Keys to Limbo'},
-    'Limbo': {'North': 'Gluttony', 'East': 'Torture Hall', 'South': 'Lust', 'West': 'Exit', 'Item': ''},
-    'Lust': {'North': 'Limbo', 'Item': 'Whip of Pain', 'Key Item': 'Key to Gluttony'},
-    'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room', 'Item': "Glutton's Chest Piece"}, #Chest piece is basically armor. Increases max health
-    'Hidden Room': {'East': 'Gluttony', 'Item': 'Blood Gem'}, #upgrade item
-    'Greed': {'North': 'Torture', 'South': 'Anger', 'Item': 'Cursed Coin', 'Key Item': 'Key to Anger'},
-    'Anger': {'North': 'Greed', 'East': 'Violence', 'West': 'Heresy', 'Item': 'Key to Heresy and Violence'},
+    'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo'},
+    'Limbo': {'North': 'Gluttony', 'East': 'Torture Hall', 'South': 'Lust', 'West': 'Exit'},
+    'Lust': {'North': 'Limbo', 'Item': 'Whip of Pain'},
+    'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room'}, #Chest piece is basically armor. Increases max health
+    'Hidden Room': {'East': 'Gluttony'}, #upgrade item
+    'Greed': {'North': 'Torture Hall', 'South': 'Anger'},
+    'Anger': {'North': 'Greed', 'East': 'Violence', 'West': 'Heresy'},
     'Heresy': {'East': 'Anger'},
-    'Violence': {'West': 'Anger', 'Item': "Murderer's Bloody Blade", 'Key Item': 'Key to Dining Hall'}, #The blade is a weapon. Though if we don't want to do weapons then we can just get rid of it
-    'Dining Hall': {'North': 'Treachery', 'East': 'Throne Room', 'South': 'Fraud', 'East': 'Torture Hall', 'Item': 'Key to Fraud'},
+    'Violence': {'West': 'Anger'}, #The blade is a weapon. Though if we don't want to do weapons then we can just get rid of it
+    'Dining Hall': {'North': 'Treachery', 'East': 'Throne Room', 'South': 'Fraud', 'East': 'Torture Hall'},
     'Fraud': {'North': 'Dining Hall'},
-    'Treachery': {'South': 'Dining Hall', 'Key Item': "Backstabber's Knife"},
+    'Treachery': {'South': 'Dining Hall'},
     'Throne Room': {'West': 'Dining Hall'},
     'Exit': {'South': 'Limbo'} #exit, end of the game
 }
 
-# Define enemy configurations
+# Define enemy configurations (Giles, if you could do this it would be helpful)
+# To do this all you have to do is write the name of each room at the start, then the name, health, atk power, and drop of the enemy.
+# Use what is already there as a template if you need to. Delete this comment and the one above it once this is complete
 enemies = {
-    'Research Room': [{'name': 'Skeleton Warrior', 'health': 50, 'attack_power': 10, 'drop': 'Bone Sword'}],
-    'Treasury': [{'name': 'Giant Spider', 'health': 60, 'attack_power': 12, 'drop': 'Spider Venom'}],
-    'Bed Chambers': [{'name': 'Wraith', 'health': 80, 'attack_power': 18, 'drop': 'Ectoplasmic Essence'}],
-    'Chamber of Shadows': [{'name': 'Shadow Assassin', 'health': 60, 'attack_power': 20, 'drop': 'Shadow Cloak'}],
-    'Armory': [{'name': 'Soul Reaper', 'health': 100, 'attack_power': 25, 'drop': 'Reaper Scythe'}],
-    'Throne Room': [{'name': 'Undead King', 'health': 120, 'attack_power': 30, 'drop': 'Cursed Crown'}]
+    # Example
+    # 'Research Room': [{'name': 'Skeleton Warrior', 'health': 50, 'attack_power': 10, 'drop': 'Bone Sword'}],
+    
 }
 
 # Player attributes
@@ -34,6 +40,9 @@ player_health = 100
 player_attack_power = 20
 heal_potions = 3
 player_inventory = []
+
+# Starting room
+current_room = 'Dungeon'
 
 # Function to clear the screen and show instructions
 def reset_window():
@@ -103,8 +112,9 @@ def combat(enemy):
                 print(f"You defeated the {enemy['name']}!")
                 player_inventory.append(enemy['drop'])
                 print("You obtained", enemy['drop'], "and added it to your inventory.")
-                break
-        if command.lower() == 'heal':
+                input("\n\nPress Enter to continue")
+                return
+        elif command.lower() == 'heal':
             if heal_potions > 0:
                 player_health = 100
                 heal_potions -= 1
@@ -117,38 +127,44 @@ def combat(enemy):
         player_health -= enemy['attack_power']
         print(f"You took {enemy['attack_power']} damage!")
         
+        if player_health <= 0:
+            reset_window()
+            print(f"You have been defeated by the {enemy['name']}!")
+            print("Game over.")
+            exit()
+        
         input("\n\nPress Enter to continue")
         reset_window()
-        
-    if player_health <= 0:
-        reset_window()
-        print(f"You have been defeated by the {enemy['name']}!")
-        print("Game over.")
-        exit()
 
-# Control loop
-current_room = 'Entrance to the Crypt'
-
+# Resets screen
 reset_window()
 
+# Main game loop
 while True:
     command = input("\nCommand: ").capitalize()
+    # Movement commands
     if command in ['North', 'East', 'South', 'West']:
         if command in rooms[current_room]:
-            current_room = rooms[current_room][command]
-            enemies_in_room = get_enemies(current_room)
+            new_room = rooms[current_room][command]
+            enemies_in_room = get_enemies(new_room)
             if enemies_in_room:
                 combat(enemies_in_room[0])
+            current_room = new_room  # Update current_room here
+            reset_window()  # Clear the screen
+            print(f"You have entered {current_room}")  # Print the room message
         else:
             reset_window()
             print("You cannot go that way.")
+    # Status command
     elif command.lower() == 'status':
         reset_window()
         display_status(current_room)
+    #Quit command
     elif command.lower() == 'quit':
         reset_window()
         print("Exiting game.")
         break
+    #Error message
     else:
         reset_window()
         print("Invalid command. Please enter a valid direction, 'status', or 'quit' to exit.")
