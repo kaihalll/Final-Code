@@ -1,10 +1,3 @@
-# To-Do list
-# 1. Training room
-# 2. Equipping different weapons from inventory
-# 3. Printing out items in inventory and direction arrays instead of whole array
-# 4. Creating enemies for each room (besides starting room)
-
-
 import os
 
 # Define room configurations
@@ -13,33 +6,43 @@ rooms = {
     'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo'},
     'Limbo': {'North': 'Gluttony', 'East': 'Torture Hall', 'South': 'Lust', 'West': 'Exit'},
     'Lust': {'North': 'Limbo'},
-    'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room'}, #Chest piece is basically armor. Increases max health
-    'Hidden Room': {'East': 'Gluttony'}, #upgrade item
+    'Gluttony': {'South': 'Limbo', 'West': 'Hidden Room'},
+    'Hidden Room': {'East': 'Gluttony'},
     'Greed': {'North': 'Torture Hall', 'South': 'Anger'},
     'Anger': {'North': 'Greed', 'East': 'Violence', 'West': 'Heresy'},
     'Heresy': {'East': 'Anger'},
-    'Violence': {'West': 'Anger'}, #The blade is a weapon. Though if we don't want to do weapons then we can just get rid of it
-    'Dining Hall': {'North': 'Treachery', 'East': 'Throne Room', 'South': 'Fraud', 'East': 'Torture Hall'},
+    'Violence': {'West': 'Anger'},
+    'Dining Hall': {'North': 'Treachery', 'East': 'Throne Room', 'South': 'Fraud', 'West': 'Torture Hall'},
     'Fraud': {'North': 'Dining Hall'},
     'Treachery': {'South': 'Dining Hall'},
     'Throne Room': {'West': 'Dining Hall'},
-    'Exit': {'South': 'Limbo'} #exit, end of the game
+    'Exit': {}
 }
 
-# Define enemy configurations (Giles, if you could do this it would be helpful)
-# To do this all you have to do is write the name of each room at the start, then the name, health, atk power, and drop of the enemy.
-# Use what is already there as a template if you need to. Delete this comment and the one above it once this is complete
+# Define enemy configurations
 enemies = {
-    # Example
-    # 'Research Room': [{'name': 'Skeleton Warrior', 'health': 50, 'attack_power': 10, 'drop': 'Bone Sword'}],
-    
+    'Torture Hall': [{'name': 'Torturer', 'health': 40, 'attack_power': 10, 'drop': 'soul'}],
+    'Limbo': [{'name': 'Lost Soul', 'health': 30, 'attack_power': 8, 'drop': 'soul'}],
+    'Lust': [{'name': 'Seducer', 'health': 35, 'attack_power': 12, 'drop': 'soul'}],
+    'Gluttony': [{'name': 'Gluttonous Beast', 'health': 50, 'attack_power': 15, 'drop': 'soul'}],
+    'Hidden Room': [{'name': 'Guardian', 'health': 60, 'attack_power': 18, 'drop': 'soul'}],
+    'Greed': [{'name': 'Greedy Merchant', 'health': 45, 'attack_power': 14, 'drop': 'soul'}],
+    'Anger': [{'name': 'Wrathful Warrior', 'health': 55, 'attack_power': 16, 'drop': 'soul'}],
+    'Heresy': [{'name': 'Heretic Priest', 'health': 50, 'attack_power': 14, 'drop': 'soul'}],
+    'Violence': [{'name': 'Violent Knight', 'health': 90, 'attack_power': 20, 'drop': 'Throne Room Key'}],
+    'Dining Hall': [{'name': 'Vengeful Spirit', 'health': 40, 'attack_power': 12, 'drop': 'soul'}],
+    'Fraud': [{'name': 'Deceiver', 'health': 45, 'attack_power': 14, 'drop': 'soul'}],
+    'Treachery': [{'name': 'Backstabber', 'health': 50, 'attack_power': 16, 'drop': 'soul'}],
+    'Throne Room': [{'name': 'Undead King', 'health': 200, 'attack_power': 45, 'drop': 'Key to Exit'}]
 }
 
 # Player attributes
 player_health = 100
+player_max_health = 100  # Added max health
 player_attack_power = 20
 heal_potions = 3
 player_inventory = []
+souls = 0  # Added souls count
 
 # Starting room
 current_room = 'Dungeon'
@@ -57,11 +60,13 @@ Instructions:
 -------------
 - Enter a direction (North, East, South, West) to move.
 - You will encounter enemies in each room.
-- When you are in a combat encounter you can not leave the room.
+- When you are in a combat encounter you cannot leave the room.
 - Defeat enemies by attacking them.
 - To attack, type 'Attack'.
 - Loot obtained from defeated enemies is added to your inventory.
 - Type 'status' to see your current status.
+- Type 'heal' to use a health potion if you have one.
+- Type 'upgrade' to exchange souls for increased health (only in Dungeon).
 - Type 'quit' to exit the game.
 -------------
 """
@@ -77,10 +82,11 @@ def get_enemies(room):
 # Function to display player status
 def display_status(current_room):
     print("Current Room:", current_room)
-    print("Player Health:", player_health)
+    print("Player Health:", player_health, "/", player_max_health)
     print("Health Potions:", heal_potions)
-    print("Inventory:", player_inventory)
-    print("Available Directions:", list(rooms[current_room].keys()))
+    print("Inventory:", ', '.join(player_inventory) if player_inventory else 'None')
+    print("Souls:", souls)
+    print("Available Directions:", ', '.join(rooms[current_room].keys()))
 
 # Function to display health bars
 def display_health_bars(player_health, enemy_health):
@@ -91,6 +97,7 @@ def display_health_bars(player_health, enemy_health):
 def combat(enemy):
     global player_health
     global heal_potions
+    global souls
     enemy_health = enemy['health']
     
     reset_window()
@@ -110,13 +117,18 @@ def combat(enemy):
             if enemy_health <= 0:
                 reset_window()
                 print(f"You defeated the {enemy['name']}!")
-                player_inventory.append(enemy['drop'])
-                print("You obtained", enemy['drop'], "and added it to your inventory.")
+                drop = enemy['drop']
+                if drop == 'soul':
+                    souls += 1
+                    print("You obtained a soul and added it to your collection.")
+                else:
+                    player_inventory.append(drop)
+                    print("You obtained", drop, "and added it to your inventory.")
                 input("\n\nPress Enter to continue")
                 return
         elif command.lower() == 'heal':
             if heal_potions > 0:
-                player_health = 100
+                player_health = player_max_health
                 heal_potions -= 1
                 print("Player healed back to full health!")
             else:
@@ -146,6 +158,20 @@ while True:
     if command in ['North', 'East', 'South', 'West']:
         if command in rooms[current_room]:
             new_room = rooms[current_room][command]
+            
+            # Check for keys before entering the Throne Room or Exit
+            if new_room == 'Throne Room':
+                required_keys = ['Throne Room Key']
+                if not all(key in player_inventory for key in required_keys):
+                    reset_window()
+                    print("You need the Throne Room Key to enter the Throne Room.")
+                    continue
+            elif new_room == 'Exit':
+                if 'Key to Exit' not in player_inventory:
+                    reset_window()
+                    print("You need the Key to Exit to enter this room.")
+                    continue
+            
             enemies_in_room = get_enemies(new_room)
             if enemies_in_room:
                 combat(enemies_in_room[0])
@@ -159,12 +185,39 @@ while True:
     elif command.lower() == 'status':
         reset_window()
         display_status(current_room)
-    #Quit command
+    # Heal command
+    elif command.lower() == 'heal':
+        reset_window()
+        if heal_potions > 0:
+            player_health = player_max_health
+            heal_potions -= 1
+            print("Player healed back to full health!")
+        else:
+            print("You do not have any heal potions")
+    # Upgrade command
+    elif command.lower() == 'upgrade':
+        reset_window()
+        if current_room == 'Dungeon':
+            if souls > 0:
+                souls -= 1
+                player_max_health += 5
+                player_health = player_max_health
+                print("Your maximum health has increased by 5! Your new maximum health is", player_max_health)
+            else:
+                print("You do not have any souls to upgrade.")
+        else:
+            print("You can only upgrade in the Dungeon.")
+    # Quit command
     elif command.lower() == 'quit':
         reset_window()
         print("Exiting game.")
         break
-    #Error message
+    # Error message
     else:
         reset_window()
-        print("Invalid command. Please enter a valid direction, 'status', or 'quit' to exit.")
+        print("Invalid command. Please enter a valid direction, 'status', 'heal', 'upgrade', or 'quit' to exit.")
+    #Check if player wins game
+    if current_room == 'Exit':
+        reset_window()
+        print('You escaped hell. Congratulations!')
+        exit()
