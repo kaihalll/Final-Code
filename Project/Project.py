@@ -47,6 +47,7 @@ souls = 0  # Added souls count
 # Starting room
 current_room = 'Dungeon'
 
+
 # Function to clear the screen and show instructions
 def reset_window():
     os.system('clear')
@@ -147,6 +148,7 @@ def combat(enemy):
         
         input("\n\nPress Enter to continue")
         reset_window()
+
 
 # Resets screen
 reset_window()
