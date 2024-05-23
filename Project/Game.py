@@ -26,10 +26,15 @@ while True:
                     reset_window()
                     print("You need the Throne Room Key to enter the Throne Room.")
                     continue
-            if new_room == 'Greed':
-                if 'Key to Room of Greed' not in player_inventory:
+            if new_room == 'Greed': 
+                if 'Key to Greed' not in player_inventory:
                     reset_window()
-                    print("You need the Key to Room of Greed to enter this room")
+                    print("You need the Key to Greed to enter this room.")
+                    continue
+            if new_room == 'Dining Hall':
+                if 'Key to Dining Hall' not in player_inventory:
+                    reset_window()
+                    print("You need the Key to Dining Hall to enter this room")
                     continue
             elif new_room == 'Exit':
                 if 'Key to Exit' not in player_inventory:
@@ -46,12 +51,42 @@ while True:
             current_room = new_room
             reset_window()
             print(f"You have entered {current_room}")  # Print the room message
+            
+            # Room Descriptions
+            if current_room == 'Dungeon':
+                print("You are in a dimly lit, damp cell with iron bars and the faint sound of distant screams.")
+            if current_room == 'Torture Hall':
+                print("You are in a chamber filled with medieval torture devices, stained with blood, and echoing with the agonized cries of past victims.")
+            if current_room == 'Limbo':
+                print("You are in a misty, ethereal space suspended in time, where lost souls wander aimlessly without hope of salvation.")
+            if current_room == 'Lust':
+                print("You are in a decadent room adorned with velvet drapes and seductive paintings, exuding an intoxicating atmosphere of forbidden desires.")
+            if current_room == 'Gluttony':
+                print("You are in an overstuffed banquet hall overflowing with decaying food, where grotesque figures gorge themselves endlessly.")
+            if current_room == 'Hidden Room':
+                print("You are in a secret, well-concealed chamber accessible through a disguised entrance, containing ancient artifacts and forgotten secrets.")
+            if current_room == 'Greed':
+                print("You are in a vault glittering with gold, jewels, and treasures, guarded by traps and the lingering presence of materialism.")
+            if current_room == 'Anger':
+                print("You are in a fiery, chaotic arena with walls scorched by flames, resonating with the sounds of furious battles and enraged roars.")
+            if current_room == 'Heresy':
+                print("You are in a blasphemous sanctuary filled with profane symbols and dark rituals, challenging the very foundations of faith.")
+            if current_room == 'Violence':
+                print("You are in a brutal, blood-soaked battleground littered with weapons and the remains of countless brutal confrontations.")
+            if current_room == 'Dining Hall':
+                print("You are in a grand, yet eerie hall with long, empty tables set for a feast that never comes, haunted by the whispers of ghostly diners.")
+            if current_room == 'Fraud':
+                print("You are in a labyrinthine room of illusions and deceit, where nothing is as it seems and every step could lead to treachery.")
+            if current_room == 'Treachery':
+                print("You are in a cold, treacherous chamber where danger lingers in the air.")
+            if current_room == 'Throne Room':
+                print("You are in a majestic, yet ominous throne room with a dark, commanding seat of power.")
+                 
         else:
             reset_window()
             print("You cannot go that way.")
-        # Upgrading player's health in the Dungeon with collected souls
     # Upgrades player's health in the Dungeon with collected souls
-    elif command.lower() == 'upgrade':
+    elif command.lower() == 'upgrade health':
         reset_window()
         if current_room == 'Dungeon':
             if souls > 0:
@@ -63,10 +98,21 @@ while True:
                 print("You do not have any souls to upgrade.")
         else:
             print("You can only upgrade in the Dungeon.")
+    elif command.lower() == 'upgrade power':
+        reset_window()
+        if current_room == 'Dungeon':
+            if souls > 0:
+                souls -= 1
+                player_attack_power += 5
+                print("Your attack power has increased by 5! Your current damage is", player_attack_power)
+            else:
+                print("You do not have any souls to upgrade.")
+        else:
+            print("You can only upgrade in the Dungeon.")
     # Displaying player status
     elif command.lower() == 'status':
         reset_window()
-        display_status(current_room, player_health, player_max_health, heal_potions, player_inventory, souls, rooms)
+        display_status(current_room, player_health, player_max_health, heal_potions, player_inventory, souls, rooms, player_attack_power)
     # Heals the player if they have healing potions
     elif command.lower() == 'heal':
         reset_window()
