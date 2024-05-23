@@ -22,7 +22,7 @@ rooms = {
 # Stores enemy data
 enemies = {
     'Torture Hall': [{'name': 'Torturer', 'health': 40, 'attack_power': 10, 'drop': 'soul'}],
-    'Limbo': [{'name': 'Lost Soul', 'health': 30, 'attack_power': 8, 'drop': 'soul'}],
+    'Limbo': [{'name': 'Lost Soul', 'health': 30, 'attack_power': 8, 'drop': 'Key to Room of Greed'}],
     'Lust': [{'name': 'Seducer', 'health': 35, 'attack_power': 12, 'drop': 'soul'}],
     'Gluttony': [{'name': 'Gluttonous Beast', 'health': 50, 'attack_power': 15, 'drop': 'soul'}],
     'Hidden Room': [{'name': 'Guardian', 'health': 60, 'attack_power': 18, 'drop': 'soul'}],

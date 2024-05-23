@@ -26,6 +26,11 @@ while True:
                     reset_window()
                     print("You need the Throne Room Key to enter the Throne Room.")
                     continue
+            if new_room == 'Greed':
+                if 'Key to Room of Greed' not in player_inventory:
+                    reset_window()
+                    print("You need the Key to Room of Greed to enter this room")
+                    continue
             elif new_room == 'Exit':
                 if 'Key to Exit' not in player_inventory:
                     reset_window()

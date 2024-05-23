@@ -40,8 +40,8 @@ def display_status(current_room, player_health, player_max_health, heal_potions,
 
 # Function to display health bars for player and enemy
 def display_health_bars(player_health, enemy_health):
-    print("Player Health: [", "█" * (player_health // 5), "]")
-    print("Enemy Health:  [", "█" * (enemy_health // 5), "]")
+    print("Player Health: [", "\033[92m█" * (player_health // 5), "\033[0m]")
+    print("Enemy Health:  [", "\033[91m█" * (enemy_health // 5), "\033[0m]")
 
 # Function to get enemies in a specified room
 def get_enemies(room, enemies):
