@@ -1,4 +1,6 @@
-# Define room configurations
+# config.py
+
+# Stores room data
 rooms = {
     'Dungeon': {'South': 'Torture Hall'},
     'Torture Hall': {'North': 'Dungeon', 'East': 'Dining Hall', 'South': 'Greed', 'West': 'Limbo'},
@@ -17,7 +19,7 @@ rooms = {
     'Exit': {}
 }
 
-# Define enemy configurations
+# Stores enemy data
 enemies = {
     'Torture Hall': [{'name': 'Torturer', 'health': 40, 'attack_power': 10, 'drop': 'soul'}],
     'Limbo': [{'name': 'Lost Soul', 'health': 30, 'attack_power': 8, 'drop': 'soul'}],
@@ -33,14 +35,3 @@ enemies = {
     'Treachery': [{'name': 'Backstabber', 'health': 50, 'attack_power': 16, 'drop': 'soul'}],
     'Throne Room': [{'name': 'Undead King', 'health': 200, 'attack_power': 45, 'drop': 'Key to Exit'}]
 }
-
-# Player attributes
-player_health = 100
-player_max_health = 100  # Added max health
-player_attack_power = 20
-heal_potions = 3
-player_inventory = []
-souls = 0  # Added souls count
-
-# Starting room
-current_room = 'Dungeon'
